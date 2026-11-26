@@ -27,6 +27,7 @@ jobs:
           JOBS: '4'
           CC_BIN: clang-14
         run: |
+          set -o pipefail
           chmod +x ci/build-uac2.sh
           ./ci/build-uac2.sh 2>&1 | tee build-uac2.log
 
@@ -38,4 +39,5 @@ jobs:
             out/Image
             out/.config
             build-uac2.log
+          if-no-files-found: error
           retention-days: 14
