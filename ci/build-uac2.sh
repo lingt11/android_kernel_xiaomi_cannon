@@ -11,7 +11,7 @@ CROSS32="${CROSS32:-arm-linux-gnueabi-}"
 CLANG_TRIPLE="${CLANG_TRIPLE:-aarch64-linux-gnu-}"
 
 # 4.14 老代码在 clang-14 下的新增告警不该判死
-KCFLAGS="${KCFLAGS:--Wno-error -Wno-error=strict-prototypes -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -Wno-error=format -Wno-error=dangling-pointer -Wno-error=array-compare -Wno-error=attribute-warning -Wno-error=unused-but-set-variable -Wno-error=misleading-indentation -Wno-error=implicit-fallthrough}"
+KCFLAGS="${KCFLAGS:--Wno-unknown-warning-option -Wno-error -Wno-error=strict-prototypes -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -Wno-error=format -Wno-error=unused-but-set-variable -Wno-error=misleading-indentation -Wno-error=implicit-fallthrough}"
 
 mkdir -p "$OUT"
 
