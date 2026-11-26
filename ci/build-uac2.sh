@@ -19,6 +19,7 @@ echo "== 生成 .config：k6853v1_64_defconfig + cannon_defconfig + UAC2"
 make O="$OUT" ARCH=arm64 k6853v1_64_defconfig
 cat arch/arm64/configs/cannon_defconfig >> "$OUT/.config"
 {
+	echo '# CONFIG_LTO_CLANG is not set'   # ThinLTO 需要 lld；用 GNU gold 链接 vdso 会失败
 	echo 'CONFIG_SND=y'
 	echo 'CONFIG_SND_PCM=y'
 	echo 'CONFIG_USB_F_UAC2=y'
