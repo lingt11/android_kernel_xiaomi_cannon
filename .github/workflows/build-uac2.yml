@@ -49,7 +49,7 @@ jobs:
           name: Image-uac2-${{ github.run_number }}
           path: |
             out/Image
-            out/.config
+            out/config.final.txt
             build-uac2.log
           if-no-files-found: error
           retention-days: 14
