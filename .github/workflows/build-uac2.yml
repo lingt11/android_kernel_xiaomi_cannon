@@ -22,6 +22,12 @@ jobs:
             python3 curl xz-utils patch gzip tar make git \
             clang-14 lld-14 llvm-14 gcc-aarch64-linux-gnu gcc-arm-linux-gnueabi
 
+      - name: 准备 ld.lld 名字
+        run: |
+          ls -l /usr/bin/ld.lld* 2>/dev/null || true
+          sudo ln -sf "$(command -v ld.lld-14 || command -v lld-14 || echo /usr/bin/ld.lld-14)" /usr/local/bin/ld.lld
+          ld.lld --version | head -1
+
       - name: 编译（含 UAC2）
         env:
           JOBS: '4'
