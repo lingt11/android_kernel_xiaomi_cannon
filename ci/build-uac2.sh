@@ -25,6 +25,8 @@ cat arch/arm64/configs/cannon_defconfig >> "$OUT/.config"
 	echo 'CONFIG_SND_PCM=y'
 	echo 'CONFIG_USB_F_UAC2=y'
 	echo 'CONFIG_USB_CONFIGFS_F_UAC2=y'
+	echo 'CONFIG_USB_F_UAC1=y'
+	echo 'CONFIG_USB_CONFIGFS_F_UAC1=y'
 } >> "$OUT/.config"
 # LTO：cannon_defconfig 里是 CONFIG_LTO_CLANG=y（ThinLTO），GNU gold 不支持
 # --thinlto-cache-dir，vdso 链接会失败。这里显式选 LTO_NONE。
@@ -35,7 +37,7 @@ grep -E '^CONFIG_(LTO|LTO_CLANG|LTO_NONE|THINLTO)' "$OUT/.config" || echo '   (�
 grep -q '^CONFIG_LTO_CLANG=y' "$OUT/.config" && { echo "错误：LTO_CLANG 仍然开启" >&2; exit 1; } || true
 
 echo "== 核对关键配置"
-for k in CONFIG_SND CONFIG_SND_PCM CONFIG_USB_GADGET CONFIG_USB_CONFIGFS CONFIG_USB_F_UAC2 CONFIG_USB_CONFIGFS_F_UAC2 CONFIG_USB_CONFIGFS_MASS_STORAGE CONFIG_USB_CONFIGFS_RNDIS CONFIG_MTK_COMBO_WIFI; do
+for k in CONFIG_SND CONFIG_SND_PCM CONFIG_USB_GADGET CONFIG_USB_CONFIGFS CONFIG_USB_F_UAC2 CONFIG_USB_CONFIGFS_F_UAC2 CONFIG_USB_F_UAC1 CONFIG_USB_CONFIGFS_F_UAC1 CONFIG_USB_CONFIGFS_MASS_STORAGE CONFIG_USB_CONFIGFS_RNDIS CONFIG_MTK_COMBO_WIFI; do
 	printf '   %-36s %s\n' "$k" "$(sed -n "s/^${k}=//p" "$OUT/.config" | head -1)"
 done
 grep -q '^CONFIG_USB_CONFIGFS_F_UAC2=y' "$OUT/.config" || { echo "错误：UAC2 未启用" >&2; exit 1; }
