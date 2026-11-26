@@ -20,6 +20,7 @@ make O="$OUT" ARCH=arm64 k6853v1_64_defconfig
 cat arch/arm64/configs/cannon_defconfig >> "$OUT/.config"
 {
 	echo '# CONFIG_DEBUG_INFO is not set'  # 不要调试信息：省一半编译时间，且避免 DWARF5 让老 objdump 刷屏
+	echo 'CONFIG_MTK_TOPO_CTRL=y'        # 让 performance/base/utility.o 编进来（perfmgr_trace_* 定义在此）
 	echo 'CONFIG_SND=y'
 	echo 'CONFIG_SND_PCM=y'
 	echo 'CONFIG_USB_F_UAC2=y'
