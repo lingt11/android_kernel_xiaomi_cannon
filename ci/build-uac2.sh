@@ -19,13 +19,18 @@ echo "== 生成 .config：k6853v1_64_defconfig + cannon_defconfig + UAC2"
 make O="$OUT" ARCH=arm64 k6853v1_64_defconfig
 cat arch/arm64/configs/cannon_defconfig >> "$OUT/.config"
 {
-	echo '# CONFIG_LTO_CLANG is not set'   # ThinLTO 需要 lld；用 GNU gold 链接 vdso 会失败
 	echo 'CONFIG_SND=y'
 	echo 'CONFIG_SND_PCM=y'
 	echo 'CONFIG_USB_F_UAC2=y'
 	echo 'CONFIG_USB_CONFIGFS_F_UAC2=y'
 } >> "$OUT/.config"
+# LTO：cannon_defconfig 里是 CONFIG_LTO_CLANG=y（ThinLTO），GNU gold 不支持
+# --thinlto-cache-dir，vdso 链接会失败。这里显式选 LTO_NONE。
+scripts/config --file "$OUT/.config" -e LTO_NONE -d LTO_CLANG -d THINLTO -d LTO || true
 make O="$OUT" ARCH=arm64 olddefconfig >/dev/null
+echo "== LTO 状态"
+grep -E '^CONFIG_(LTO|LTO_CLANG|LTO_NONE|THINLTO)' "$OUT/.config" || echo '   (无 LTO 相关符号)'
+grep -q '^CONFIG_LTO_CLANG=y' "$OUT/.config" && { echo "错误：LTO_CLANG 仍然开启" >&2; exit 1; } || true
 
 echo "== 核对关键配置"
 for k in CONFIG_SND CONFIG_SND_PCM CONFIG_USB_GADGET CONFIG_USB_CONFIGFS CONFIG_USB_F_UAC2 CONFIG_USB_CONFIGFS_F_UAC2 CONFIG_USB_CONFIGFS_MASS_STORAGE CONFIG_USB_CONFIGFS_RNDIS CONFIG_MTK_COMBO_WIFI; do
